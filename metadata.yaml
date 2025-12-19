@@ -1,0 +1,6 @@
+name: clean_response
+desc: 移除AI回复中的括号内容（如 (思考)、（微笑）等）
+help: 自动清理 LLM 回复中括号内的非文本内容，适用于 TTS 场景
+version: v1.0.0
+author: Amnemon
+repo: https://github.com/Amnemon/amnemon/tree/main/astrbot_clean_response
