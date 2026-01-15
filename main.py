@@ -54,12 +54,13 @@ class CleanResponse(Star):
         #     return
 
         # 简单清洗：只去括号
-        cleaned = re.sub(r'（[^）]*）|\([^)]*\)', '', full_text).strip()
+        cleaned = re.sub(r'（[^）]*）/s|\([^)]*\)', '', full_text).strip()
 
         # 替换 Plain
         for idx in sorted(plain_indices, reverse=True):
             del result.chain[idx]
         if plain_indices:
             result.chain.insert(plain_indices[0], Comp.Plain(cleaned))
+
 
         logger.info(f"[CleanResponse] 处理完成！新文本: '{cleaned}'")
