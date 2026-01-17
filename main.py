@@ -6,7 +6,7 @@ import astrbot.api.message_components as Comp
 from astrbot.core.message.message_event_result import ResultContentType
 
 
-@register("clean_response", "Amnemon", "清除括号内AI的心声还有动作神态描写", "1.0.0")
+@register("clean_response", "Amnemon", "清除括号内AI的心声还有动作神态描写及/符号", "1.0.1")
 class CleanResponse(Star):
     def __init__(self, context: Context, config: dict = None):
         super().__init__(context)
@@ -44,23 +44,14 @@ class CleanResponse(Star):
             logger.info("[CleanResponse] 无有效文本，跳过")
             return
 
-        # 暂时跳过 LLM 判断（调试用）
-        # try:
-        #     is_llm = result.is_llm_result()
-        # except:
-        #     is_llm = getattr(result, "result_content_type", None) == ResultContentType.LLM_RESULT
-        # if not is_llm:
-        #     logger.info("[CleanResponse] 非 LLM 响应")
-        #     return
-
-        # 简单清洗：只去括号
-        cleaned = re.sub(r'（[^）]*）/s|\([^)]*\)', '', full_text).strip()
+        # 修正正则 + 增加清除 / 符号的逻辑
+        # 1. 匹配并删除中英文括号及内部内容  2. 匹配并删除 / 符号
+        cleaned = re.sub(r'（[^）]*）|\([^)]*\)|/', '', full_text).strip()
 
         # 替换 Plain
         for idx in sorted(plain_indices, reverse=True):
             del result.chain[idx]
         if plain_indices:
             result.chain.insert(plain_indices[0], Comp.Plain(cleaned))
-
 
         logger.info(f"[CleanResponse] 处理完成！新文本: '{cleaned}'")
